@@ -7,6 +7,7 @@ const db = require("../config/db");
 // Cria um novo projeto
 exports.create = (req, res) => {
   const { name, description } = req.body;
+  const userId = req.user.id;
 
   if (!name) {
     return res
@@ -14,8 +15,12 @@ exports.create = (req, res) => {
       .json({ message: "O nome do projeto é obrigatório." });
   }
 
-  const query = "INSERT INTO projects (name, description) VALUES (?, ?)";
-  db.query(query, [name, description], (err, result) => {
+  const query = `
+    INSERT INTO projects (name, description, user_id, created_at, updated_at)
+    VALUES (?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+  `;
+
+  db.query(query, [name, description, userId], (err, result) => {
     if (err) {
       return res
         .status(500)
@@ -39,7 +44,12 @@ exports.update = (req, res) => {
       .json({ message: "O nome do projeto é obrigatório." });
   }
 
-  const query = "UPDATE projects SET name = ?, description = ? WHERE id = ?";
+  const query = `
+    UPDATE projects
+    SET name = ?, description = ?, updated_at = CURRENT_TIMESTAMP
+    WHERE id = ?
+  `;
+
   db.query(query, [name, description, id], (err, result) => {
     if (err) {
       return res
