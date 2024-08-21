@@ -108,14 +108,15 @@ exports.addItemsToProject = (req, res) => {
     item.category,
     item.cost,
     projectId,
+    item.creation_date, // Inclui a data de criação específica
     new Date(),
     new Date(),
   ]);
 
   const query = `
-    INSERT INTO items (name, category, cost, project_id, created_at, updated_at)
-    VALUES ?
-  `;
+  INSERT INTO items (name, category, cost, project_id, creation_date, created_at, updated_at)
+  VALUES ?
+`;
 
   db.query(query, [insertValues], (err, result) => {
     if (err) {
