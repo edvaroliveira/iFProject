@@ -18,6 +18,8 @@ router.post(
   itemController.addItemsToProject
 );
 
+router.get("/by-project/:projectId", itemController.getItemsByProject);
+
 router.put("/:id", authorize("admin"), itemController.update); // Verifica se itemController.update está definido
 router.delete("/:id", authorize("admin"), itemController.delete); // Verifica se itemController.delete está definido
 router.get("/project/:projectId", itemController.findAllByProject); // Verifica se itemController.findAllByProject está definido

@@ -14,6 +14,7 @@ router.delete("/:id", authorize("admin"), projectController.delete);
 router.get("/", projectController.findAll);
 // console.log("antes");
 router.get("/with-items", projectController.findAllWithItems);
+router.get("/by-user", projectController.getProjectsByUser);
 // console.log("depois");
 router.get("/:id", projectController.findById);
 

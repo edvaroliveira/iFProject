@@ -203,3 +203,29 @@ exports.findAllWithItems = (req, res) => {
     res.status(200).json(projects);
   });
 };
+
+exports.getProjectsByUser = (req, res) => {
+  const userId = req.user.id;
+  const userRole = req.user.role;
+
+  let query = "";
+  let queryParams = [];
+
+  if (userRole === "admin") {
+    // Se o usuário for admin, retorna todos os projetos
+    query = "SELECT * FROM projects";
+  } else {
+    // Se o usuário não for admin, retorna apenas os projetos associados ao usuário
+    query = "SELECT * FROM projects WHERE user_id = ?";
+    queryParams.push(userId);
+  }
+
+  db.query(query, queryParams, (err, results) => {
+    if (err) {
+      return res
+        .status(500)
+        .json({ message: "Erro ao buscar projetos.", error: err });
+    }
+    res.status(200).json(results);
+  });
+};

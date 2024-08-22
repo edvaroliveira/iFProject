@@ -127,3 +127,18 @@ exports.addItemsToProject = (req, res) => {
     res.status(201).json({ message: "Itens adicionados com sucesso!" });
   });
 };
+
+exports.getItemsByProject = (req, res) => {
+  const { projectId } = req.params;
+
+  const query = "SELECT * FROM items WHERE project_id = ?";
+
+  db.query(query, [projectId], (err, results) => {
+    if (err) {
+      return res
+        .status(500)
+        .json({ message: "Erro ao buscar itens do projeto.", error: err });
+    }
+    res.status(200).json(results);
+  });
+};
