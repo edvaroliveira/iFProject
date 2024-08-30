@@ -145,6 +145,10 @@ exports.findById = (req, res) => {
 exports.findAllWithItems = (req, res) => {
   const role = req.query.role;
   const userId = req.user.id;
+  console.log("userID", userId);
+  console.log("role", role);
+
+  console.log("Foiiiiii");
 
   let query = "";
   let queryParams = [];

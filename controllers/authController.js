@@ -14,33 +14,6 @@ exports.register = (req, res) => {
   });
 };
 
-// exports.login = (req, res) => {
-//   const { username, password } = req.body;
-
-//   User.findByUsername(username, (err, users) => {
-//     if (err || users.length === 0)
-//       return res.status(404).send("User not found.");
-
-//     const user = users[0];
-//     const passwordIsValid = bcrypt.compareSync(password, user.password);
-//     if (!passwordIsValid) return res.status(401).send("Invalid password.");
-
-//     const token = jwt.sign(
-//       { id: user.id, role: user.role },
-//       process.env.ACCESS_TOKEN_SECRET,
-//       {
-//         expiresIn: 86400, // 24 hours
-//       }
-//     );
-
-//     console.log("Token JWT gerado:", token); // Log para depuração
-
-//     res.status(200).send({ accessToken: token }); // Retorna o token com nome esperado pelo frontend
-//   });
-// };
-
-// /backend/controllers/authController.js
-
 exports.login = (req, res) => {
   const { username, password } = req.body;
 
@@ -70,11 +43,15 @@ exports.login = (req, res) => {
     }
 
     const token = jwt.sign(
-      { id: user.id, role: user.role },
+      { id: user.id, role: user.role, iat: Math.floor(Date.now() / 1000) },
       process.env.ACCESS_TOKEN_SECRET,
-      { expiresIn: "1h" }
+      { expiresIn: "8h" } // Expires in 8 hours
     );
     console.log(token);
+
+    // Decodificação do token para inspeção
+    const decodedToken = jwt.decode(token);
+    console.log("Token decodificado:", decodedToken);
 
     res.status(200).json({ accessToken: token, role: user.role });
   });

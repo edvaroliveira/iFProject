@@ -1,5 +1,3 @@
-// /backend/middlewares/authMiddleware.js
-
 const jwt = require("jsonwebtoken");
 
 const verifyToken = (req, res, next) => {
@@ -14,7 +12,10 @@ const verifyToken = (req, res, next) => {
 
   jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
     if (err) {
-      return res.status(403).json({ message: "Token inválido ou expirado" });
+      console.error("Erro de verificação do token:", err); // Loga o erro para depuração
+      return res
+        .status(403)
+        .json({ message: "Token inválido ou expirado", error: err.message });
     }
     req.user = user;
     next();
