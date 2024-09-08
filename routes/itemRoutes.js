@@ -2,7 +2,8 @@
 
 const express = require("express");
 const router = express.Router();
-const itemController = require("../controllers/itemController"); // Certifique-se de que este caminho está correto
+const itemController = require("../controllers/itemController");
+console.log(itemController);
 
 const verifyToken = require("../middlewares/authMiddleware");
 const authorize = require("../middlewares/roleMiddleware");
@@ -18,7 +19,7 @@ router.post(
   itemController.addItemsToProject
 );
 
-router.get("/by-project/:projectId", itemController.getItemsByProject);
+router.get("/by-project/:projectId", itemController.findAllByProject);
 
 router.put("/:id", authorize("admin"), itemController.update); // Verifica se itemController.update está definido
 router.delete("/:id", authorize("admin"), itemController.delete); // Verifica se itemController.delete está definido

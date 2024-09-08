@@ -23,19 +23,26 @@ exports.login = (req, res) => {
       .json({ message: "Usuário e senha são obrigatórios." });
   }
 
-  const query = "SELECT * FROM users WHERE username = ?";
+  // const query = "SELECT * FROM users WHERE username = ?";
 
-  db.query(query, [username], (err, results) => {
+  // db.query(query, [username], (err, results) => {
+  //   if (err) {
+  //     console.error("Erro ao buscar usuário:", err);
+  //     return res.status(500).json({ message: "Erro ao buscar usuário." });
+  //   }
+
+  //   if (results.length === 0) {
+  //     return res.status(404).json({ message: "Usuário não encontrado." });
+  //   }
+
+  // const user = results[0];
+  const user = User.findByUsername(username, (err, user) => {
     if (err) {
       console.error("Erro ao buscar usuário:", err);
       return res.status(500).json({ message: "Erro ao buscar usuário." });
     }
 
-    if (results.length === 0) {
-      return res.status(404).json({ message: "Usuário não encontrado." });
-    }
-
-    const user = results[0];
+    console.log(user);
 
     const isPasswordValid = bcrypt.compareSync(password, user.password);
     if (!isPasswordValid) {
