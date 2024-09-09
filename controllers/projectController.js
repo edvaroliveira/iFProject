@@ -2,9 +2,9 @@ const Project = require("../models/Project");
 
 // Cria um novo projeto
 exports.create = (req, res) => {
-  const { name, description } = req.body;
+  const { name, description, budget } = req.body;
   const userId = req.body.user_id;
-  console.log(userId);
+  // console.log(userId);
 
   if (!name) {
     return res
@@ -12,22 +12,26 @@ exports.create = (req, res) => {
       .json({ message: "O nome do projeto é obrigatório." });
   }
 
-  Project.create({ name, description, user_id: userId }, (err, project) => {
-    if (err) {
-      return res
-        .status(500)
-        .json({ message: "Erro ao criar o projeto.", error: err });
+  Project.create(
+    { name, description, budget, user_id: userId },
+    (err, project) => {
+      if (err) {
+        return res
+          .status(500)
+          .json({ message: "Erro ao criar o projeto.", error: err });
+      }
+      res.status(201).json({
+        message: "Projeto criado com sucesso!",
+        projectId: project.id,
+      });
     }
-    res
-      .status(201)
-      .json({ message: "Projeto criado com sucesso!", projectId: project.id });
-  });
+  );
 };
 
 // Atualiza um projeto existente
 exports.update = (req, res) => {
   const { id } = req.params;
-  const { name, description } = req.body;
+  const { name, description, budget } = req.body;
 
   if (!name) {
     return res
@@ -35,7 +39,7 @@ exports.update = (req, res) => {
       .json({ message: "O nome do projeto é obrigatório." });
   }
 
-  Project.update(id, { name, description }, (err, project) => {
+  Project.update(id, { name, description, budget }, (err, project) => {
     if (err) {
       return res
         .status(500)

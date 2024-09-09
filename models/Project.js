@@ -4,13 +4,19 @@ const Project = {
   // Criar um novo projeto
   create: (projectData, callback) => {
     const query = `
-    INSERT INTO projects (name, description, user_id, created_at, updated_at)
-    VALUES ($1, $2, $3, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP) RETURNING *;
+      INSERT INTO projects (name, description, budget, user_id, created_at, updated_at)
+      VALUES ($1, $2, $3, $4, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP) RETURNING  *
+
   `;
 
     db.query(
       query,
-      [projectData.name, projectData.description, projectData.user_id],
+      [
+        projectData.name,
+        projectData.description,
+        projectData.budget,
+        projectData.user_id,
+      ],
       (err, result) => {
         if (err) {
           return callback(err);
@@ -23,11 +29,11 @@ const Project = {
   // Atualizar um projeto existente
   update: (id, projectData, callback) => {
     const query = `
-      UPDATE projects SET name = $1, description = $2, updated_at = CURRENT_TIMESTAMP
-      WHERE id = $3 RETURNING *`;
+       UPDATE projects SET name = $1, description = $2, budget = $3, updated_at = CURRENT_TIMESTAMP
+      WHERE id = $4 RETURNING *`;
     db.query(
       query,
-      [projectData.name, projectData.description, id],
+      [projectData.name, projectData.description, projectData.budget, id],
       (err, result) => {
         if (err) {
           return callback(err);
@@ -78,7 +84,7 @@ const Project = {
     if (role === "admin") {
       query = `
         SELECT
-          p.id as projectId, p.name as projectName, p.description as projectDescription,
+          p.id as projectId, p.name as projectName, p.description as projectDescription,  p.budget as projectBudget,
           i.category as itemCategory, SUM(i.cost) as totalCost
         FROM projects p
         LEFT JOIN items i ON p.id = i.project_id
@@ -88,7 +94,7 @@ const Project = {
     } else {
       query = `
         SELECT
-          p.id as projectId, p.name as projectName, p.description as projectDescription,
+          p.id as projectId, p.name as projectName, p.description as projectDescription,  p.budget as projectBudget,
           i.category as itemCategory, SUM(i.cost) as totalCost
         FROM projects p
         LEFT JOIN items i ON p.id = i.project_id
